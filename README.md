@@ -8,3 +8,30 @@ Basic skel to effortlesly move around a yolov4-tiny training environment. Uses a
 - Run docker image with `bash docker_run.sh`
 - Run `make` to download and configure the net architecture
 - Train with `bash train.sh`
+- Test with `bash test.sh`
+
+
+## Handy stuff
+
+```
+# Symlink to avoid tree navigation through results
+ln -s PyTorch_YOLOv4/runs/train train-runs
+
+# Plot output from results.txt
+import numpy as np
+import matplotlib.pyplot as plt
+res = np.loadtxt('results.txt', dtype=object)
+ap50 = np.array(res[:,10], dtype=float)
+map = np.array(res[:,11], dtype=float)
+plt.plot(ap50)
+plt.plot(map)
+plt.savefig('results.png')
+
+```
+
+
+## Credits
+
+- [WongKinYiu/PyTorch_YOLOv4/](https://github.com/WongKinYiu/PyTorch_YOLOv4/):
+    - Most code
+    - Cfg architecture base file
