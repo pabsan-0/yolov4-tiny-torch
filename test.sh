@@ -2,16 +2,24 @@
 # Assert dataset paths
 sed "s:images/:$PWD/dataset/images/:g" dataset/dataset.yaml > tmp/dataset.yaml
 
-cd PyTorch_YOLOv4
+rm -rf PyTorch_YOLOv4/runs/test/
+
+pushd PyTorch_YOLOv4
     python3 test.py                         \
         --conf 0.001                        \
-        --batch 8                           \
+        --batch-size 32                     \
         --device 0                          \
         --img 1280                          \
         --data ../tmp/dataset.yaml          \
         --cfg ../cfg/tiny.cfg               \
-        --weights ../best.pt                \
-        --name tiny
+        --task test                         \
+        --weights ../best.pt \
+        --name tiny                         \
+        --save-json
+popd
 
-## This fixed a bug (already on makefile)     
-## 	sed '98i\                pred = pred.cpu()' -i.backup PyTorch_YOLOv4/utils/plots.py
+# Run with default conf threshold i.e. 0.001
+python3 tmp/yaml2json.py tmp/dataset.yaml test > tmp/dataset_test.json
+python3 tmp/valcoco.py tmp/dataset_test.json PyTorch_YOLOv4/runs/test/*/*_predictions.json
+
+
